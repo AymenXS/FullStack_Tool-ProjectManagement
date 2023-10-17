@@ -12,7 +12,7 @@ app.use(express.json());
 
 // Routes
 app.use('/projects', projects);
-app.use('/project/tasks', tasks);
+app.use('/projects/:id/tasks', tasks);
 
 // Start the server
 const start = async () => {
