@@ -1,13 +1,18 @@
 const express = require('express');
 const app = express();
+const projects = require('./routes/projects');
+const tasks = require('./routes/tasks');
 const connectDB = require('./db/connect');
 require('dotenv').config();
 const PORT = 3000;
 
-// Middleware to parse JSON data
+// Middleware
+// app.use(express.static('./public'))
 app.use(express.json());
 
-// Define routes and handle database operations here
+// Routes
+app.use('/projects', projects);
+app.use('/project/tasks', tasks);
 
 // Start the server
 const start = async () => {

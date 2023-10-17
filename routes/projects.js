@@ -8,3 +8,8 @@ const {
   deleteProject,
   updateProject,
 } = require('../controllers/projects');
+
+router.route('/').get(getAllProjects).post(createProject);
+router.route('/:id').get(getProject).patch(updateProject).delete(deleteProject);
+
+module.exports = router;
