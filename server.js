@@ -1,13 +1,20 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 const projects = require('./routes/projects');
 const tasks = require('./routes/tasks');
 const connectDB = require('./db/connect');
 require('dotenv').config();
-const PORT = 3000;
+const PORT = 5000;
 
 // Middleware
-// app.use(express.static('./public'))
+app.use(express.static(path.join(__dirname, 'client', 'build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+});
+
+// app.use(express.static('./public'));
 app.use(express.json());
 
 // Routes
