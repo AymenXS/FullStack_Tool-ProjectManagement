@@ -8,14 +8,17 @@ require('dotenv').config();
 const PORT = 5000;
 
 // Middleware
-app.use(express.static(path.join(__dirname, 'client', 'build')));
+app.use(express.json());
 
-app.get('*', (req, res) => {
+// Connecting to Front-End
+app.use(express.static(path.join(__dirname, 'client', 'build')));
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
 });
 
-// app.use(express.static('./public'));
-app.use(express.json());
+app.get('/hello', (req, res) => {
+  res.send('Task Manager App');
+});
 
 // Routes
 app.use('/projects', projects);
