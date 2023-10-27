@@ -6,8 +6,8 @@ const TaskSchema = new Schema({
   description: String,
   project: { type: Schema.Types.ObjectId, ref: 'Project' }, // To be tackled later!
   status: Boolean,
-  // starting_date: Date,
-  // ending_date: Date,
+  starting_date: Date,
+  ending_date: Date,
 });
 
 module.exports = mongoose.model('Task', TaskSchema);
