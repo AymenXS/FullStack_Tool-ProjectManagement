@@ -24,7 +24,7 @@ const updateProject = asyncWrapper(async (req, res) => {
   const { id: projectID } = req.params;
   const project = await Project.findOneAndUpdate({ _id: projectID }, req.body, {
     new: true, // To return the updated version
-    runValidators: true,
+    runValidators: true, // Ensure it runs during update; by default it runs on "Model.create()" without specifying it
   });
   if (!project) {
     return next(`No Task with id: ${projectID}`, 404);

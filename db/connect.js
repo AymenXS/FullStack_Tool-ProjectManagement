@@ -7,4 +7,4 @@ const connectDB = (url) => {
   });
 };
 
-module.exports = connectDB; // Missing semicolon result in the error: "MongoNetworkError"
+module.exports = connectDB; // Omitting semicolon result in the error: "MongoNetworkError"
