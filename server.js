@@ -12,7 +12,7 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
-// Connecting to Front-End
+// Connecting   to Front-End
 app.use(express.static(path.join(__dirname, 'client', 'build')));
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
