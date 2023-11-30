@@ -1,9 +1,18 @@
 import React from 'react';
-import ProjectList from './components/projects/ProjectList';
-import TaskList from './components/tasks/TaskList';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Main from './components/shared/Main';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
-  return <ProjectList />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Main />} />
+      </Routes>
+      <ToastContainer position="top-center" />
+    </BrowserRouter>
+  );
 };
 
 export default App;

@@ -23,8 +23,7 @@ app.get('/hello', (req, res) => {
 });
 
 // Routes
-app.use('/projects', projects);
-app.use('/projects', tasks);
+app.use('/projects', projects, tasks);
 
 // Start the server
 const start = async () => {

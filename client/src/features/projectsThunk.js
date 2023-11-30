@@ -1,44 +1,52 @@
-import customFetch from '../../utils/axios';
-import { showLoading, hideLoading, getAllJobs } from '../allJobs/allJobsSlice';
-import { clearValues } from './jobSlice';
-import authHeader from '../../utils/authHeader';
+import axios from 'axios';
+import { getAllProjects } from './projectsSlice';
 
-export const createJobThunk = async (job, thunkAPI) => {
+const url = 'http://localhost:3000/projects';
+
+export const getAllProjectsThunk = async (_, thunkAPI) => {
   try {
-    const resp = await customFetch.post('/jobs', job, authHeader(thunkAPI));
-    thunkAPI.dispatch(clearValues());
-    return resp.data;
+    const response = await axios.get(url);
+    return response.data.data.projects;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data.msg);
+    return thunkAPI.rejectWithValue('something went wrong');
   }
 };
 
-export const deleteJobThunk = async (jobId, thunkAPI) => {
-  thunkAPI.dispatch(showLoading());
+export const getProjectThunk = async (projectID, thunkAPI) => {
   try {
-    const resp = await customFetch.delete(`/jobs/${jobId}`, {
-      headers: {
-        authorization: `Bearer ${thunkAPI.getState().user.user.token}`,
-      },
-    });
-    thunkAPI.dispatch(getAllJobs());
-    return resp.data;
+    const response = await axios.get(`${url}/${projectID}`);
+    return response.data.project;
   } catch (error) {
-    thunkAPI.dispatch(hideLoading());
-    return thunkAPI.rejectWithValue(error.response.data.msg);
+    return thunkAPI.rejectWithValue('something went wrong');
   }
 };
 
-export const editJobThunk = async ({ jobId, job }, thunkAPI) => {
+export const createProjectThunk = async (project, thunkAPI) => {
   try {
-    const resp = await customFetch.patch(`/jobs/${jobId}`, job, {
-      headers: {
-        authorization: `Bearer ${thunkAPI.getState().user.user.token}`,
-      },
-    });
-    thunkAPI.dispatch(clearValues());
-    return resp.data;
+    const response = await axios.post(url, project);
+    thunkAPI.dispatch(getAllProjects());
+    return response.data.projects;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data.msg);
+    return thunkAPI.rejectWithValue(error);
+  }
+};
+
+export const editProjectThunk = async ({ projectID, project }, thunkAPI) => {
+  try {
+    const response = await axios.patch(`${url}/${projectID}`, project);
+    thunkAPI.dispatch(getAllProjects());
+    return response.data.data.projects;
+  } catch (error) {
+    thunkAPI.rejectWithValue('something went wrong');
+  }
+};
+
+export const deleteProjectThunk = async (projectID, thunkAPI) => {
+  try {
+    const response = await axios.delete(`${url}/${projectID}`);
+    thunkAPI.dispatch(getAllProjects());
+    return response.data.data.projects;
+  } catch (error) {
+    thunkAPI.rejectWithValue('something went wrong');
   }
 };

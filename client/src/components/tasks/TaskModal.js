@@ -1,31 +1,152 @@
-import React, { useState } from 'react';
-import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
-import CustomModal from '../shared/Modal';
+import { useState } from 'react';
+import { FaTasks } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { createTask, editTask } from '../../features/tasksSlice';
+import { closeModal } from '../../features/modalSlice';
 
 const TaskModal = () => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const dispatch = useDispatch();
+  const {
+    isEditing,
+    _id,
+    project: populatedProject,
+    label: populatedLabel,
+    description: populatedDescription,
+    starting_date: populatedStartingDate,
+    ending_date: populatedEndingDate,
+  } = useSelector((store) => store.modal);
 
-  const toggleModal = () => {
-    setModalOpen(!modalOpen);
+  const { projectsList } = useSelector((store) => store.projects);
+
+  const [label, setLabel] = useState(populatedLabel);
+  const [description, setDescription] = useState(populatedDescription);
+  const [startingDate, setStartingDate] = useState(populatedStartingDate);
+  const [endingDate, setEndingDate] = useState(populatedEndingDate);
+  const [project, setProject] = useState(populatedProject);
+
+  const taskData = {
+    label,
+    description,
+    project,
+    starting_date: startingDate,
+    ending_date: endingDate,
+    status: true,
   };
 
-  const handleFormSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    // Implement form submission logic (Redux action, API call, etc.)
-    toggleModal();
+
+    if (isEditing) {
+      dispatch(editTask({ taskID: _id, task: taskData }));
+      return;
+    }
+
+    dispatch(createTask({ projectID: taskData.project, task: taskData }));
   };
 
   return (
-    <div>
-      <Button color="primary" onClick={toggleModal}>
-        Add Task
-      </Button>
-      <CustomModal isOpen={modalOpen} toggle={toggleModal}>
-        <Form onSubmit={handleFormSubmit}>
-          {/* Form fields for adding a task */}
-        </Form>
-      </CustomModal>
-    </div>
+    <>
+      <div className="form-row">
+        <span id="modalHeader">
+          <FaTasks size={'1.5rem'} />
+          {isEditing ? <h5>Edit your Task</h5> : <h5>Add new Task</h5>}
+        </span>
+        <p id="small-info">Fill your Task attributes</p>
+      </div>
+
+      <form action="post" onSubmit={handleSubmit}>
+        <div className="form-row">
+          <label htmlFor="label" className="form-label">
+            label
+          </label>
+          <input
+            type="text"
+            name="label"
+            className="form-input"
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+          />
+        </div>
+
+        <div className="form-row">
+          <label htmlFor="description" className="form-label">
+            description
+          </label>
+          <textarea
+            name="description"
+            className="form-textarea"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+
+        <div className="form-row">
+          <label htmlFor="project" className="form-label">
+            Select Project:
+          </label>
+          <select className="form-select" name="projects">
+            {projectsList.map((project) => {
+              return (
+                <option
+                  key={project._id}
+                  value={project._id}
+                  onClick={(e) => {
+                    setProject(e.target.value);
+                  }}
+                >
+                  {project.label}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+
+        <div className="form-row">
+          <label htmlFor="starting-date" className="form-label">
+            started at
+          </label>
+          <input
+            type="date"
+            name="startingDate"
+            id=""
+            className="form-input"
+            value={isEditing ? startingDate.slice(0, 10) : startingDate}
+            onChange={(e) => setStartingDate(e.target.value)}
+          />
+        </div>
+
+        <div className="form-row">
+          <label htmlFor="ending-date" className="form-label">
+            ended at
+          </label>
+          <input
+            type="date"
+            name="endingDate"
+            id=""
+            className="form-input"
+            value={isEditing ? endingDate.slice(0, 10) : endingDate}
+            onChange={(e) => setEndingDate(e.target.value)}
+          />
+        </div>
+
+        <div className="buttons">
+          <button type="button" className="btn" id="cancel" onClick={() => dispatch(closeModal())}>
+            cancel
+          </button>
+          <button
+            type="submit"
+            className="btn"
+            id="submit"
+            onClick={(e) => {
+              handleSubmit(e);
+              dispatch(closeModal());
+            }}
+          >
+            save
+          </button>
+        </div>
+      </form>
+    </>
   );
 };
 
