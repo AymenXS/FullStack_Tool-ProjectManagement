@@ -2,13 +2,14 @@ const Task = require('../models/Task');
 const asyncWrapper = require('../middleware/async');
 
 const getAllTasks = asyncWrapper(async (req, res) => {
-  const { id: projectID } = req.params;
+  const { projectID } = req.params;
   const tasks = await Task.find({ project: projectID });
   res.status(200).json({ status: 'success', data: { tasks } });
 });
 
 const getTask = asyncWrapper(async (req, res, next) => {
-  const { id: taskID } = req.params;
+  const { taskID } = req.params;
+  console.log(req.params);
   const task = await Task.findOne({ _id: taskID });
   if (!task) {
     return next(`No Task with id: ${taskID}`, 404);
@@ -22,7 +23,7 @@ const createTask = asyncWrapper(async (req, res) => {
 });
 
 const updateTask = asyncWrapper(async (req, res) => {
-  const { id: taskID } = req.params;
+  const { taskID } = req.params;
   const task = await Task.findOneAndUpdate({ _id: taskID }, req.body, {
     new: true, // To return the updated version
     runValidators: true,
@@ -34,7 +35,7 @@ const updateTask = asyncWrapper(async (req, res) => {
 });
 
 const deleteTask = asyncWrapper(async (req, res) => {
-  const { id: taskID } = req.params;
+  const { taskID } = req.params;
   const task = await Task.findOneAndDelete({ _id: taskID });
   if (!task) {
     return next(`No Task with id: ${taskID}`, 404);
